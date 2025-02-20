@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Create Task{% endblock title %}
+{% block body %}
+<div class="container">
+  {% if error %}
+  <div class="alert alert-danger" role="alert">
+    {{error}}
+  </div>
+  {%endif%}
+    
+    <form method = "POST" >
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Title</label>
+          <input type="text" class="form-control"name="title" id="exampleInputEmail1" aria-describedby="emailHelp">
+          
+        </div>
+        <div class="form-floating mb-3">
+            <textarea class="form-control" name="description" id="floatingTextarea"></textarea>
+            <label for="floatingTextarea">Description</label>
+          </div>
+            
+      <button ="submit" class="btn btn-primary">Create</button>
+      </form>
+
+</div>
+
+{% endblock body %}

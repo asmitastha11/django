@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Todolist{% endblock title %}
+{% block body %}
+<div class="container"></div>
+<h3>Total task:{{total}}</h3>
+<h3>completed task:{{completed}}</h3>
+<h3>incomplete task:{{notcompleted}}</h3>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">id</th>
+        <th scope="col">title</th>
+        <th scope="col">description</th>
+        <th scope="col">status</th>
+        <th scope="col">actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%for task in tasks %}
+      <tr>
+       
+        <td>{{forloop.counter}}</td>
+        <td>{{task.title}}</td>
+        <td>{{task.description}}</td>
+        <td>
+          {%if task.is_completed %}
+          <span class="text-success">
+            completed
+          </span>
+          {% else %}
+          <span class="text-danger">
+            Pending
+          </span>
+          {%endif%}
+         
+          <!-- {{task.is_completed}} -->
+        </td>
+       <td>
+        <a href="{{task.pk}}/" class="btn btn-success">Mark</a>
+        <a href="{{task.pk}}/edit" class="btn btn-primary">Edit</a>
+        <a href="{{task.pk}}/delete" class="btn btn-danger">Delete</a>
+        <!-- {% comment %} <a type="submit" class="btn btn-primary">Create</button> {% endcomment %} -->
+        <!-- <button class ="btn btn-Success">Mark</button> -->
+       </td>
+        
+      </tr>
+      {%endfor%}
+      
+    </tbody>
+  </table>
+{% endblock body %}

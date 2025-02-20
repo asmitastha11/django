@@ -1,42 +1,59 @@
-from django.shortcuts import render, HttpResponse
-
+from django.shortcuts import render, HttpResponse,redirect
+from .models import Todolist
 # Create your views here.
 def home(request):
     return render(request,'home.html')
 
-# contact, about....
-def contact(request):
-    person = [
-        {
-        "name":"ram",
-        "age":25,
-    },
-    {
-        "name":"shyam",
-        "age":15,
-    },
-    {
-        "name":"sita",
-        "age":21,
-    },
-    {
-        "name":"gita",
-        "age":25,
-    },
-    {
-        "name":"asmita",
-        "age":25,
-    },
-    {
-        "name":"lia",
-        "age":50,
-    }
- ]
-    context = {
-        "name":"Contact Page",
-        "person":person
-    }
-    return render(request,'contact.html',context)
 
-# def contact(request):
-#     return HttpResponse("contact details")
+def task(request):
+    tasks = Todolist.objects.all()
+    total = tasks.count()
+    completed = Todolist.objects.filter(is_completed = True).count()
+    notcompleted = Todolist.objects.filter(is_completed = False).count()
+    context = {
+        "tasks" : tasks,
+        "total" : total,
+        "completed":completed,
+        "notcompleted":notcompleted
+    }
+    return render(request,'task.html',context)
+
+def task_create(request):
+    if request.method == "POST":
+        titles = request.POST.get('title')
+        descriptions = request.POST.get('description')
+        if titles == '' or descriptions == '':
+            context = {
+                'error':"Both fields required"
+            }
+            return render(request,'create.html',context)
+        Todolist.objects.create(title=titles, description=descriptions)#tittle is from the form that we created and titles is variable
+         # return HttpResponse(title)
+        return redirect("/task/")
+    return render(request,'create.html')
+def mark_complete(request,pk):
+    task = Todolist.objects.get(pk = pk)#pk-primary key
+    task.is_completed = True
+    task.save()
+    return redirect('/task')
+def mark_edit(request,pk):
+    task = Todolist.objects.get(pk = pk)
+    context = {"task":task}
+    if request.method == "POST":
+        titles = request.POST.get('title')
+        descriptions = request.POST.get('description')
+        if titles == '' or descriptions == '':
+            context = {
+                'error':"Both fields required"
+            }
+            return render(request,'edit.html',context)
+        task.title = titles
+        task.description = descriptions
+        task.save()
+        return redirect('/task')
+    return render(request,'edit.html',context)
+
+def mark_delete(request,pk):
+    task = Todolist.objects.get(pk = pk)#pk-primary key  
+    task.delete()
+    return redirect('/task')
